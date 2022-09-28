@@ -1,5 +1,5 @@
 const con = require('../DB/mysql');
-const siteLink = "https://presale.nextepcrypto.com/";
+const siteLink = "http://92.205.128.43:80";
 
 //  submit
 exports.submit = async (req, res) => {
