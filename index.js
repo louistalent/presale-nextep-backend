@@ -10,7 +10,7 @@ const path = require('path');
 // var certificate = fs.readFileSync('./certs/presale.crt', 'utf8');
 // var credentials = { key: privateKey, cert: certificate };
 
-const FRONTENDPATH = path.normalize(__dirname + './build')
+const FRONTENDPATH = path.normalize(__dirname + '/build')
 app.use(express.static(FRONTENDPATH))
 // db connect
 require('./DB/mysql');
