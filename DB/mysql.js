@@ -5,10 +5,11 @@ const mysql = require('mysql');
 let connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '',
+  password: '123',
   database: 'presale'
 });
 const util = require('util');
+console.log('mysql connect')
 // connection.connect(function (err) {
 //   if (err) {
 //     return console.error('error: ' + err.message);
@@ -18,6 +19,7 @@ const util = require('util');
 // });
 // exports.query = util.promisify(connection.query).bind(connection);
 connection.connect();
+
 module.exports = connection;
 // module.export mysql;
 // connection.end(function (err) {
