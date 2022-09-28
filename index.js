@@ -3,7 +3,7 @@ const app = express();
 const cors = require('cors');
 const https = require('https');
 const fs = require('fs');
-import * as path from 'path';
+const path = require('path');
 
 
 // var privateKey = fs.readFileSync('./certs/presale.key', 'utf8');
