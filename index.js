@@ -5,7 +5,6 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path');
 
-
 // var privateKey = fs.readFileSync('./certs/presale.key', 'utf8');
 // var certificate = fs.readFileSync('./certs/presale.crt', 'utf8');
 // var credentials = { key: privateKey, cert: certificate };
