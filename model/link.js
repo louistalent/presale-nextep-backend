@@ -27,6 +27,8 @@ exports.submit = async (req, res) => {
             } else {
                 // Reject different IP
                 console.log('result[0].ip ; ', token_result[0].ip)
+                console.log('token_result ; ', token_result);
+
 
                 if (token_result[0].ip == null) {
                     // Ip and time insert -> success
