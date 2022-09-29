@@ -10,8 +10,8 @@ const path = require('path');
 // var certificate = fs.readFileSync('./certs/presale.crt', 'utf8');
 // var credentials = { key: privateKey, cert: certificate };
 
-const FRONTENDPATH = path.normalize(__dirname + '/build')
-app.use(express.static(FRONTENDPATH))
+// const FRONTENDPATH = path.normalize(__dirname + '/build')
+app.use(express.static(path.join(__dirname, 'build/')));
 // db connect
 require('./DB/mysql');
 
@@ -26,15 +26,15 @@ const options = {
 };
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.set('build', path.join(__dirname, 'build'))
 app.set('view engine', 'html');
 
 //Routes
 app.use('/', require('./routes/router'));
-app.get('/', (req, res) => {
-    const filename = FRONTENDPATH + '/index.html'
-    res.sendFile(filename);
-})
 
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'build/index.html'));
+});
 const PORT = process.env.PORT || 80;
 // var httpsServer = https.createServer(credentials, app);
 // httpsServer.listen(PORT, console.log("Server has started at port " + PORT));
