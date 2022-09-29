@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const model = require("../model/link");
-// const siteLink = "http://92.205.128.43";
-const siteLink = "http://localhost:3000";
+const siteLink = "http://92.205.128.43";
+// const siteLink = "http://localhost:3000";
 
 router.get('/submit', (req, res) => {
     try {
