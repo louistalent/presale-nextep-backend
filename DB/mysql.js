@@ -1,11 +1,12 @@
 
 const mysql = require('mysql');
 
+
 // My Sql connect
 let connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '123',
+  password: '',
   database: 'presale'
 });
 const util = require('util');
@@ -20,7 +21,27 @@ console.log('mysql connect')
 // exports.query = util.promisify(connection.query).bind(connection);
 connection.connect();
 
-module.exports = connection;
+const execute = async (sql, params) => {
+  return new Promise(resolve => {
+    // const query = `SELECT COUNT(*) AS count FROM users`;
+    connection.query(sql, (err, result) => {
+      if (err) {
+        resolve({ err });
+      } else {
+        resolve(result)
+      }
+    });
+  })
+}
+
+
+module.exports = {
+  connection,
+  execute
+};
+
+
+
 // module.export mysql;
 // connection.end(function (err) {
 //   if (err) {

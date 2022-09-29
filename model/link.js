@@ -1,70 +1,61 @@
-const con = require('../DB/mysql');
-const siteLink = "http://92.205.128.43";
+const { v4: uuidv4 } = require('uuid');
+const { connection, execute } = require('../DB/mysql');
 
 //  submit
 exports.submit = async (req, res) => {
     console.log('submit : token- ')
     let { token } = req.query;
     console.log(token);
-    const IP = req.ip.replace('::ffff:', '');
-    let token_ = token.replaceAll("'", "");
-    console.log(token_);
-    console.log(IP);
+    let IP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    if (IP === "::1") IP = "127.0.0.1";
 
     try {
-        const tokenQuery = `SELECT * FROM users WHERE token="${token_}"`;
-        con.query(tokenQuery, function (err, token_result) {
+        const tokenQuery = `SELECT * FROM users WHERE token="${token}"`;
+        let token_result = await execute(tokenQuery);
+        if (token_result.err) throw err;
+        if (token_result.length > 0) {
+            // ip select
+            const ipQuery = `SELECT * FROM users WHERE ip="${IP}"`;
+            let result1 = await execute(ipQuery);
             if (err) throw err;
-            if (token_result.length > 0) {
-                console.log('token_result : ');
-                console.log(JSON.stringify(token_result));
-                // ip select
-                const ipQuery = `SELECT * FROM users WHERE ip="${IP}"`;
-                con.query(ipQuery, function (err, result1) {
-                    if (err) throw err;
-                    console.log('IP select')
-                    console.log(result1);
-
-                    if (result1.length > 0) {
-                        // already registed-> success
-                        console.log('already registed IP')
-                        res.redirect(`${siteLink}/start-presale`);
-                    } else {
-                        // Reject different IP
-                        console.log('result[0].ip ; ', token_result[0].ip)
-
-                        if (token_result[0].ip == null) {
-                            // Ip and time insert -> success
-                            console.log(result1)
-                            console.log('Ip and time insert')
-                            let currentTime;
-                            getTimeNow(function (nowTime) {
-                                currentTime = nowTime;
-                            });
-                            const updateaQuery = `UPDATE users SET ip = '${IP}', time = '${currentTime}' WHERE token='${token_}'`;
-                            con.query(updateaQuery, function (err, result2) {
-                                if (err) throw err;
-                                res.redirect(`${siteLink}/start-presale`);
-                            });
-                        } else {
-                            if (token_result[0].ip !== IP) {
-                                console.log('different IP')
-                                console.log(IP)
-                                res.redirect(`${siteLink}/page-not-found`);
-                            } else if (token_result[0].ip == IP) {
-                                res.redirect(`${siteLink}/start-presale`);
-                            }
-                        }
-                    }
-                });
-
+            console.log('IP select')
+            console.log(result1);
+            if (result1.length > 0) {
+                // already registed-> success
+                console.log('already registed IP')
+                return "success";
             } else {
-                // failed
-                console.log('failed')
-                res.redirect(`${siteLink}/page-not-found`);
+                // Reject different IP
+                console.log('result[0].ip ; ', token_result[0].ip)
 
+                if (token_result[0].ip == null) {
+                    // Ip and time insert -> success
+                    console.log(result1)
+                    console.log('Ip and time insert -> ip = null')
+                    let currentTime;
+                    getTimeNow(function (nowTime) {
+                        currentTime = nowTime;
+                    });
+                    const updateaQuery = `UPDATE users SET ip = '${IP}', time = '${currentTime}' WHERE token='${token}'`;
+                    const result2 = await execute(updateaQuery);
+                    if (result2) throw err;
+                    return "success";
+                } else {
+                    if (token_result[0].ip !== IP) {
+                        console.log('different IP')
+                        console.log(IP)
+                        return "page-not-found";
+                    } else if (token_result[0].ip == IP) {
+                        return "success";
+                    }
+                }
             }
-        })
+
+        } else {
+            // failed
+            console.log('failed')
+            return "page-not-found";
+        }
 
         // console.log(res);
     } catch (error) {
@@ -72,45 +63,40 @@ exports.submit = async (req, res) => {
     }
 };
 
-exports.generateNewLink = async (req, res) => {
+exports.generateNewLink = async () => {
     try {
         console.log('generateNewLink')
-        const query = `SELECT COUNT(*) AS count FROM users`;
-        con.query(query, function (err, result) {
-            if (err) throw err;
-            console.log(result[0].count)
-            const token = result[0].count + '000presale'
-            const query1 = `INSERT INTO users(token) VALUES('${token}')`;
-            con.query(query1, function (err, result1) {
-                if (err) throw err;
-                res.send(token);
-            });
-        });
+        const token = uuidv4();
+        const response = await execute(`INSERT INTO users(token) VALUES('${token}')`);
+        if (response.err) {
+            console.log(response.err);
+            return null;
+        }
+        return token;
     } catch (error) {
         console.log(error)
-        throw err
     }
+    return null;
 };
 
-exports.deleteAll = async (req, res) => {
+exports.deleteAll = async () => {
     try {
         console.log('deleteAll')
-        const q1 = `DELETE FROM users`;
-        con.query(q1, function (err, result) {
-            if (err) { console.log('X -> DELETE command fileure'); throw err };
-            res.send('success');
-        })
+        let result = await execute(`DELETE FROM users`);
+        if (result.err) throw result.err;
+        return 'success'
     } catch (error) {
         console.log(error)
-        throw err
+        throw error
     }
 };
 
-exports.timeConfirm = async (req, res) => {
-    const IP = req.ip.replace('::ffff:', '');
+exports.timeConfirm = async (req) => {
     try {
-        // const q1 = `UPDATE opinion SET b_up = '${result1[0].b_down}', b_down = '${result1[0].b_up}', b_revert = 1 WHERE c_proposal_id = '${pk}'`;
-        _timeConfirm(IP, res)
+        let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+        if (ip === "::1") ip = "127.0.0.1";
+        let result = _timeConfirm(ip);
+        return result;
     } catch (error) {
         console.log(error)
     }
@@ -130,32 +116,30 @@ const getTimeNow = (callback) => {
     }
 }
 
-const _timeConfirm = (IP, res) => {
+const _timeConfirm = async (IP, res) => {
     const ipQuery = `SELECT * FROM users WHERE ip = "${IP}"`;
     console.log('timeConfirm IP', IP);
-    con.query(ipQuery, function (err, result) {
-        if (err) throw err;
-        if (result.length > 0) {
-            console.log('check time')
-            if (result[0].ip === IP) {
-                getTimeNow(function (currentTime) {
-                    console.log(currentTime - result[0].time > 30)
-                    if ((Number(currentTime) - Number(result[0].time)) > 180) {//24 * 3600 = 1days  //
-                        console.log('time expried')
-                        res.send(`expried`);
-                    } else {
-                        console.log(result[0].time)
-                        console.log(currentTime)
-                        console.log('you can use the site yet')
-                        res.send('available');
-                    }
-                })
-            } else {
-                res.redirect(`${siteLink}/page-not-found`);
-            }
+    let result = await execute(ipQuery);
+    if (result.err) throw result.err;
+    if (result.length > 0) {
+        console.log('check time')
+        if (result[0].ip === IP) {
+            getTimeNow(function (currentTime) {
+                console.log(currentTime - result[0].time > 30)
+                if ((Number(currentTime) - Number(result[0].time)) > 300) {//24 * 3600 = 1days  //
+                    console.log('time expried')
+                    return 'expried'
+                } else {
+                    console.log(result[0].time + ' : ' + currentTime)
+                    console.log('you can use the site yet')
+                    return 'available';
+                }
+            })
         } else {
-            console.log('_timeConfirm -> page-not-found')
-            res.redirect(`${siteLink}/page-not-found`);
+            return 'page-not-found';
         }
-    });
+    } else {
+        console.log('_timeConfirm -> page-not-found')
+        return 'page-not-found';
+    }
 }
