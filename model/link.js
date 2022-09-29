@@ -95,7 +95,9 @@ exports.timeConfirm = async (req) => {
     try {
         let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
         if (ip === "::1") ip = "127.0.0.1";
-        let result = _timeConfirm(ip);
+        let result = await _timeConfirm(ip);
+        console.log('timeConfirm Result: ')
+        console.log(result)
         return result;
     } catch (error) {
         console.log(error)

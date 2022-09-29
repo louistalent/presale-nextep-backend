@@ -32,7 +32,7 @@ router.post('/timeConfirm', async (req, res) => {
     try {
         let result = await model.timeConfirm(req);
         if (result == 'page-not-found') {
-            res.redirect(`blockchain.com/page-not-found`);
+            res.send(`page-not-found`);
         } else {
             console.log(result)
             res.send(result);
