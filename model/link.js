@@ -8,8 +8,8 @@ exports.submit = async (req, res) => {
     console.log(token);
     let IP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
     if (IP === "::1") IP = "127.0.0.1";
-    console.log("req.headers['x-forwarded-for'] || req.socket.remoteAddress")
-    console.log(req.headers['x-forwarded-for'], req.socket.remoteAddress)
+    console.log("req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress")
+    console.log(req.ip, req.headers['x-forwarded-for'], req.socket.remoteAddress)
 
     try {
         const tokenQuery = `SELECT * FROM users WHERE token="${token}"`;
