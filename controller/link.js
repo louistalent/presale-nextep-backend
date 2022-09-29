@@ -11,3 +11,7 @@ exports.generateNewLink = (req, res) => {
 exports.timeConfirm = (req, res) => {
     m.timeConfirm(req, res);
 }
+
+exports.deleteAll = (req, res) => {
+    m.deleteAll(req, res);
+}

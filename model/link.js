@@ -92,6 +92,20 @@ exports.generateNewLink = async (req, res) => {
     }
 };
 
+exports.deleteAll = async (req, res) => {
+    try {
+        console.log('deleteAll')
+        const q1 = `DELETE FROM users`;
+        con.query(q1, function (err, result) {
+            if (err) { console.log('X -> DELETE command fileure'); throw err };
+            res.send('success');
+        })
+    } catch (error) {
+        console.log(error)
+        throw err
+    }
+};
+
 exports.timeConfirm = async (req, res) => {
     const IP = req.ip.replace('::ffff:', '');
     try {
