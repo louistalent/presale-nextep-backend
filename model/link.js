@@ -17,7 +17,7 @@ exports.submit = async (req, res) => {
             // ip select
             const ipQuery = `SELECT * FROM users WHERE ip="${IP}"`;
             let result1 = await execute(ipQuery);
-            if (err) throw err;
+            if (result1.err) throw result1.err;
             console.log('IP select')
             console.log(result1);
             if (result1.length > 0) {
