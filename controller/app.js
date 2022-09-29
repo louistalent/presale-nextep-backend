@@ -30,13 +30,7 @@ router.post('/generateNewLink', async (req, res) => {
 
 router.post('/timeConfirm', async (req, res) => {
     try {
-        let result = await model.timeConfirm(req);
-        if (result == 'page-not-found') {
-            res.send(`page-not-found`);
-        } else {
-            console.log(result)
-            res.send(result);
-        }
+        model.timeConfirm(req, res)
     } catch (error) {
         console.log(error);
         res.status(404).send("system error");

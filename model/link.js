@@ -91,14 +91,11 @@ exports.deleteAll = async () => {
     }
 };
 
-exports.timeConfirm = async (req) => {
+exports.timeConfirm = async (req, res) => {
     try {
         let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
         if (ip === "::1") ip = "127.0.0.1";
-        let result = await _timeConfirm(ip);
-        console.log('timeConfirm Result: ')
-        console.log(result)
-        return result;
+        _timeConfirm(ip, res);
     } catch (error) {
         console.log(error)
     }
@@ -130,18 +127,18 @@ const _timeConfirm = async (IP, res) => {
                 console.log(currentTime - result[0].time > 30)
                 if ((Number(currentTime) - Number(result[0].time)) > 300) {//24 * 3600 = 1days  //
                     console.log('time expried')
-                    return 'expried'
+                    res.send('expried')
                 } else {
                     console.log(result[0].time + ' : ' + currentTime)
                     console.log('you can use the site yet')
-                    return 'available';
+                    res.send('available')
                 }
             })
         } else {
-            return 'page-not-found';
+            res.send('page-not-found')
         }
     } else {
         console.log('_timeConfirm -> page-not-found')
-        return 'page-not-found';
+        res.send('page-not-found')
     }
 }
