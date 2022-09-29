@@ -15,12 +15,12 @@ exports.submit = async (req, res) => {
         if (token_result.err) throw err;
         if (token_result.length > 0) {
             // ip select
-            const ipQuery = `SELECT * FROM users WHERE ip="${IP}" AND token="${token}"`;
+            const ipQuery = `SELECT * FROM users WHERE ip="${IP}"`;
             let result1 = await execute(ipQuery);
             if (result1.err) throw result1.err;
             console.log('IP select')
-            console.log('token_result ; ', token_result);
-            console.log('result1 ; ', result1);
+            console.log(result1);
+            console.log(token_result);
 
             if (result1.length > 0) {
                 // already registed-> success
@@ -28,10 +28,11 @@ exports.submit = async (req, res) => {
                 return "success";
             } else {
                 // Reject different IP
-                console.log('result[0].ip ; ', result1[0].ip)
                 console.log('token_result ; ', token_result);
-                // if IP didn't exist
-                if (result1[0].ip == null) {
+                console.log('token_result[0].ip ; ', token_result[0].ip)
+
+
+                if (token_result[0].ip == null) {
                     // Ip and time insert -> success
                     console.log(result1)
                     console.log('Ip and time insert -> ip = null')
@@ -39,17 +40,17 @@ exports.submit = async (req, res) => {
                     getTimeNow(function (nowTime) {
                         currentTime = nowTime;
                     });
-                    const updateQuery = `UPDATE users SET ip = '${IP}', time = '${currentTime}' WHERE token='${token}'`;
-                    const result2 = await execute(updateQuery);
+                    const updateaQuery = `UPDATE users SET ip = '${IP}', time = '${currentTime}' WHERE token='${token}'`;
+                    const result2 = await execute(updateaQuery);
                     if (result2) throw err;
                     return "success";
                 } else {
-                    if (result1[0].ip !== IP) {
+                    if (token_result[0].ip !== IP) {
+                        console.log('token_result[0]')
                         console.log('different IP')
                         console.log(IP)
                         return "page-not-found";
-                    } else if (result1[0].ip == IP) {
-                        console.log('same IP')
+                    } else if (token_result[0].ip == IP) {
                         return "success";
                     }
                 }
