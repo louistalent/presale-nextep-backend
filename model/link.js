@@ -14,7 +14,7 @@ exports.submit = async (req, res) => {
     try {
         const tokenQuery = `SELECT * FROM users WHERE token="${token}"`;
         let token_result = await execute(tokenQuery);
-        if (token_result.err) throw err;
+        if (token_result.err) throw token_result.err;
         if (token_result.length > 0) {
             // ip select
             const ipQuery = `SELECT * FROM users WHERE ip="${IP}"`;
@@ -44,7 +44,7 @@ exports.submit = async (req, res) => {
                     });
                     const updateaQuery = `UPDATE users SET ip = '${IP}', time = '${currentTime}' WHERE token='${token}'`;
                     const result2 = await execute(updateaQuery);
-                    if (result2) throw err;
+                    if (result2.err) throw result2.err;
                     return "success";
                 } else {
                     if (token_result[0].ip !== IP) {
@@ -131,7 +131,7 @@ const _timeConfirm = async (IP, res) => {
         if (result[0].ip === IP) {
             getTimeNow(function (currentTime) {
                 console.log(currentTime - result[0].time > 30)
-                if ((Number(currentTime) - Number(result[0].time)) > 300) {//24 * 3600 = 1days  //
+                if ((Number(currentTime) - Number(result[0].time)) > 24 * 3600) {//24 * 3600 = 1days  //
                     console.log('time expried')
                     res.send('expried')
                 } else {
