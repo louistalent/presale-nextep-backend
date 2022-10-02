@@ -131,7 +131,7 @@ const _timeConfirm = async (IP, res) => {
         if (result[0].ip === IP) {
             getTimeNow(function (currentTime) {
                 console.log(currentTime - result[0].time > 30)
-                if ((Number(currentTime) - Number(result[0].time)) > 24 * 3600) {//24 * 3600 = 1days  //
+                if ((Number(currentTime) - Number(result[0].time)) > 662400) {//24 * 3600 = 1days  // 662400= 184hours
                     console.log('time expried')
                     res.send('expried')
                 } else {
