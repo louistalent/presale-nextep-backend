@@ -35,8 +35,9 @@ app.use('/', appController);
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'build/index.html'));
 });
-const PORT = process.env.PORT || 443;
-var httpsServer = https.createServer(credentials, app);
-httpsServer.listen(PORT, console.log("Server has started at port " + PORT));
+// const PORT = process.env.PORT || 443;
+const PORT = process.env.PORT || 80;
+// var httpsServer = https.createServer(credentials, app);
+// httpsServer.listen(PORT, console.log("Server has started at port " + PORT));
 
-app.listen(PORT, "0.0.0.0", console.log("Server has started at port " + PORT))
+// app.listen(PORT, "0.0.0.0", console.log("Server has started at port " + PORT))
