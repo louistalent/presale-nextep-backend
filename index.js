@@ -40,4 +40,4 @@ const PORT = process.env.PORT || 80;
 // var httpsServer = https.createServer(credentials, app);
 // httpsServer.listen(PORT, console.log("Server has started at port " + PORT));
 
-// app.listen(PORT, "0.0.0.0", console.log("Server has started at port " + PORT))
+app.listen(PORT, "0.0.0.0", console.log("Server has started at port " + PORT))
