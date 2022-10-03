@@ -8,7 +8,7 @@ exports.submit = async (req, res) => {
     console.log(token);
     let IP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
     if (IP === "::1") IP = "127.0.0.1";
-    IP.replaceAll('::ffff:', '');
+    IP = IP.replaceAll('::ffff:', '');
 
     console.log("req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress")
     console.log(req.ip, req.headers['x-forwarded-for'], req.socket.remoteAddress)
@@ -103,7 +103,7 @@ exports.timeConfirm = async (req, res) => {
     try {
         let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
         if (ip === "::1") ip = "127.0.0.1";
-        ip.replaceAll('::ffff:', '');
+        ip = ip.replaceAll('::ffff:', '');
         _timeConfirm(ip, res);
     } catch (error) {
         console.log(error)
