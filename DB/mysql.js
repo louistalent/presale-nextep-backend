@@ -2,6 +2,7 @@
 const mysql = require('mysql');
 
 const config = require("../config.json");
+console.log('config', config)
 // My Sql connect
 let connection = mysql.createConnection(config.mysql);
 const util = require('util');
