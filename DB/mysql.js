@@ -1,14 +1,9 @@
 
 const mysql = require('mysql');
 
-
+const config = require("../config.json");
 // My Sql connect
-let connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'presale'
-});
+let connection = mysql.createConnection(config.mysql);
 const util = require('util');
 console.log('mysql connect')
 // connection.connect(function (err) {
