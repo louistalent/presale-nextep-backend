@@ -6,7 +6,7 @@ console.log('config', config)
 // My Sql connect
 let connection = mysql.createConnection(config.mysql);
 const util = require('util');
-console.log('mysql connect')
+
 // connection.connect(function (err) {
 //   if (err) {
 //     return console.error('error: ' + err.message);
@@ -15,7 +15,9 @@ console.log('mysql connect')
 //   console.log('Connected to the MySQL server.');
 // });
 // exports.query = util.promisify(connection.query).bind(connection);
-connection.connect();
+connection.connect(err => {
+  console.log("mysql", err)
+});
 
 const execute = async (sql, params) => {
   return new Promise(resolve => {
