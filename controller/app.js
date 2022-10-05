@@ -13,8 +13,10 @@ router.get('/submit', (req, res) => {
             res.redirect(`${siteLink}/start-presale`);
         }
     } catch (error) {
+        console.log("controller submit error : ");
         console.log(error);
-        res.status(404).send("system error");
+        res.redirect(`${siteLink}/page-not-found`);
+        // res.status(404).send("system error");
     }
 });
 
