@@ -9,7 +9,10 @@ exports.submit = async (req, res) => {
     let IP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
     if (IP == "::1") IP = "127.0.0.1";
     console.log(IP);
-    IP = IP.replaceAll('::ffff:', '');
+    let result = IP.search('::ffff:')
+    if (result !== -1) {
+        IP = IP.slice(7, IP.length);
+    }
 
     console.log("req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress")
     console.log(req.ip, req.headers['x-forwarded-for'], req.socket.remoteAddress)
@@ -109,6 +112,11 @@ exports.timeConfirm = async (req, res) => {
         console.log('IP typeof', typeof ip);
         console.log('timeConfirm IP:', ip)
         ip = ip.replaceAll('::ffff:', '');
+        let result = ip.search('::ffff:')
+        if (result !== -1) {
+            ip = ip.slice(7, ip.length);
+        }
+
         _timeConfirm(ip, res);
     } catch (error) {
         console.log(error)
