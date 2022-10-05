@@ -35,7 +35,7 @@ router.post('/timeConfirm', async (req, res) => {
         model.timeConfirm(req, res)
     } catch (error) {
         console.log(error);
-        res.status(404).send("system error");
+        res.send("error");
     }
 });
 
