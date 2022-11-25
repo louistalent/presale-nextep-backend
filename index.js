@@ -4,7 +4,7 @@ const cors = require('cors');
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
-const appController = require('./controller/app');
+// const appController = require('./controller/app');
 
 var privateKey = fs.readFileSync('./certs/presale.key', 'utf8');
 var certificate = fs.readFileSync('./certs/presale.crt', 'utf8');
@@ -13,7 +13,7 @@ var credentials = { key: privateKey, cert: certificate };
 // const FRONTENDPATH = path.normalize(__dirname + '/build')
 app.use(express.static(path.join(__dirname, 'build/')));
 // db connect
-require('./DB/mysql');
+// require('./DB/mysql');
 
 app.use(cors({
     origin: "*",
@@ -30,7 +30,7 @@ app.set('build', path.join(__dirname, 'build'))
 app.set('view engine', 'html');
 
 //Routes
-app.use('/', appController);
+// app.use('/', appController);
 
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'build/index.html'));
