@@ -35,7 +35,7 @@ app.set('view engine', 'html');
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'build/index.html'));
 });
-const PORT = process.env.PORT || 443;
+const PORT = process.env.PORT || 8888;
 var httpsServer = https.createServer(credentials, app);
 httpsServer.listen(PORT, console.log("Server has started at port " + PORT));
 
